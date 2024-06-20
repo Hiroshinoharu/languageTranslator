@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 from googletrans import Translator,LANGUAGES
 
 # A method to translate the text
@@ -30,6 +31,15 @@ def create_gui():
     # Configuring the layout
     window.grid_columnconfigure(0, weight=1)
     window.grid_rowconfigure(0, weight=1)
+    
+    # Adding the logo
+    logo = Image.open("images\logo.png")
+    logo = ImageTk.PhotoImage(logo)
+    
+    # Creating the logo label
+    logo_label = tk.Label(window,image=logo)
+    logo_label.image = logo
+    
     
     # Creating the input text box
     global text_input
