@@ -1,79 +1,127 @@
-import tkinter as tk
-from tkinter import ttk
-from PIL import Image, ImageTk
-from googletrans import Translator,LANGUAGES
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
+from googletrans import *
 
-# A method to translate the text
-def translate_text():
-    # Getting the user input and the chosen languages
-    src_text = text_input.get("1.0", tk.END).strip()
-    src_lang = src_lang_var.get()
-    dest_lang = dest_lang_var.get()
+class Translator(QMainWindow):
     
-    # Translating the text
-    translation = translator.translate(src_text, src=src_lang, dest=dest_lang)
-    text_output.delete("1.0", tk.END)
-    text_output.insert(tk.END, translation.text)
-
-
-# A method to create the GUI
-def create_gui():
+    # Constructor
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+     
+    # Initialize the UI   
+    def initUI(self):
+        # Configure the main layout
+        layout = QVBoxLayout()
+        
+        #Variables set for icon buttons
+        settings_icon = QPushButton("⚙️")
+        favorites_icon = QPushButton("⭐")
+        history_icon = QPushButton("🕒")
+        speaker_icon = QPushButton("🔊")
+        copy_icon = QPushButton("📋")
+        
+        # Header section
+        header_layout = QHBoxLayout() # Create a horizontal layout
+        app_logo = QLabel("Lingualink") # Create a label
+        
+        # Header Icon layout
+        header_icons = QVBoxLayout() # Create a vertical layout
+        
+        # Add the icons to the header layout
+        header_icons.addWidget(settings_icon)
+        header_icons.addWidget(favorites_icon)
+        header_icons.addWidget(history_icon)
+        
+        # Add the app logo and icons to the header layout
+        header_layout.addWidget(app_logo, alignment=Qt.AlignCenter)
+        header_layout.addLayout(header_icons)
+        
+        # Language selection section
+        language_selection_layout = QHBoxLayout()
+        english_label = QLabel("🇬🇧 English")
+        switch_label = QLabel("🔄")
+        spanish_label = QLabel("🇪🇸 Spanish")
+        
+        # Add the language selection labels to the layout
+        language_selection_layout.addWidget(english_label)
+        language_selection_layout.addWidget(switch_label)
+        language_selection_layout.addWidget(spanish_label)
+        
+        # Text area layout
+        text_areas_layout = QVBoxLayout()
+        
+        # Input section 
+        input_layout = QVBoxLayout()
+        input_text = QLineEdit("Input text here")
+        
+        # Add the input text and speaker icon to the input layout
+        input_layout.addWidget(input_text) 
+        input_layout.addWidget(speaker_icon)
+        
+        # Output section
+        output_layout = QVBoxLayout() # Create a vertical layout
+        output_text = QLineEdit("Output text here")
+        
+        # Add the output text and copy icon to the output layout
+        output_layout.addWidget(output_text)
+        output_layout.addWidget(speaker_icon, alignment=Qt.AlignRight)
+        
+        # Output controls layout
+        output_controls_layout = QHBoxLayout() # Create a horizontal layout
+        output_controls_layout.addWidget(favorites_icon)
+        output_controls_layout.addWidget(copy_icon)
+        
+        # Adding the output controls layout to the output layout
+        output_layout.addLayout(output_controls_layout)
+        
+        # Add the input and output layouts to the text areas layout
+        text_areas_layout.addLayout(input_layout)
+        text_areas_layout.addLayout(output_layout)
+        
+        # Combine all the layouts to one layout
+        layout.addLayout(header_layout)
+        layout.addLayout(language_selection_layout)
+        layout.addLayout(text_areas_layout)
+        
+        # Set the main layout to the main widget
+        main_widget = QWidget()
+        main_widget.setLayout(layout)
+        self.setCentralWidget(main_widget)
+        self.setWindowTitle("Lingualink Translator")
+        self.setGeometry(100, 100, 400, 400) # Set the window size (x, y, width, height)
+        self.show()
+        
+    # Method to translate the text
+    def translate_text(self):
+        pass
     
-    # Creating the main window
-    window = tk.Tk()
-    window.title("Translator")
-    window.geometry("400x400")
+    # Method to speak the text
+    def speak_text(self):
+        pass
     
-    # Creating the translator object
-    global translator
-    translator = Translator()
+    # Method to copy the text
+    def copy_text(self):
+        pass
     
-    # Configuring the layout
-    window.grid_columnconfigure(0, weight=1)
-    window.grid_rowconfigure(0, weight=1)
+    # Method to add to favorites
+    def add_to_favorites(self):
+        pass
     
-    # Adding the logo
-    logo = Image.open("images\logo.png")
-    logo = ImageTk.PhotoImage(logo)
+    # Method to view history
+    def view_history(self):
+        pass
     
-    # Creating the logo label
-    logo_label = tk.Label(window,image=logo)
-    logo_label.image = logo
+    # Method to view settings
+    def view_settings(self):
+        pass
     
-    
-    # Creating the input text box
-    global text_input
-    text_input = tk.Text(window,height=10, width=60)
-    text_input.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
-    
-    # Language Selection for the source language
-    tk.Label(window, text="Source Language").grid(row=1, column=0, padx=10, pady=10)
-    global src_lang_var
-    src_lang_var = tk.StringVar(window)
-    src_lang_box = ttk.Combobox(window, textvariable=src_lang_var,values=list(LANGUAGES.values()), state="readonly")
-    src_lang_box.grid(row=1, column=1, padx=10, pady=10)
-    src_lang_box.set("english") # Setting the default language
-    
-    # Language Selection for the destination language
-    tk.Label(window, text="Destination Language").grid(row=2, column=0, padx=10, pady=10)
-    global dest_lang_var
-    dest_lang_var = tk.StringVar(window)
-    dest_lang_box = ttk.Combobox(window, textvariable=dest_lang_var,values=list(LANGUAGES.values()), state="readonly")
-    dest_lang_box.grid(row=2, column=1, padx=10, pady=10)
-    dest_lang_box.set("spanish") # Setting the default language
-    
-    #Translate button
-    translate_button = tk.Button(window, text="Translate", command=translate_text)
-    translate_button.grid(row=3, column=1, padx=10, pady=10,sticky="ew")
-    
-    # Translated text box
-    global text_output
-    text_output = tk.Text(window,height=10, width=60)
-    text_output.grid(row=4, column=0, columnspan=3, padx=10, pady=10)
-    
-    # Running the main loop
-    window.mainloop()
-
-
+    # Method to switch languages
+    def switch_languages(self):
+        pass
+ 
+# Run the application
 if __name__ == "__main__":
-    create_gui()  
+    app = QApplication([])
+    window = Translator()
+    app.exec_()     
