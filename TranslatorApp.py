@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QComboBox, QPlainTextEdit, QPushButton, QSizePolicy, QSpacerItem
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 from googletrans import Translator, LANGUAGES # Import the required libraries
 
@@ -85,6 +85,7 @@ class TranslatorApp(QMainWindow):
         main.setLayout(layout)
         self.setCentralWidget(main)
         self.setWindowTitle("Lingualink Translator") # Set the window title
+        self.setWindowIcon(QIcon("images/icon.png"))
         self.setGeometry(100, 100, 714, 520) # Set the window geometry
         self.show() # Show the window
             
