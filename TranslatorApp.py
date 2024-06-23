@@ -19,8 +19,10 @@ class TranslatorApp(QMainWindow):
         #Variables set for icon buttons
         settings_icon = QPushButton("⚙️")
         favorites_icon = QPushButton("⭐")
+        heart_icon = QPushButton("❤️")
         history_icon = QPushButton("🕒")
-        speaker_icon = QPushButton("🔊")
+        input_speaker_icon = QPushButton("🔊")
+        output_speaker_icon = QPushButton("🔊")
         copy_icon = QPushButton("📋")
         
         # Header section
@@ -45,7 +47,7 @@ class TranslatorApp(QMainWindow):
         # Source language selection section
         source_language_combobox = QComboBox() # Create a combo box for the source language
         source_language_combobox.addItems(LANGUAGES.values()) # Add the languages to the combo box
-                
+                       
         # Swap language button
         swap_language_button = QPushButton("🔄")
         # Add functionalty for later :]
@@ -58,6 +60,8 @@ class TranslatorApp(QMainWindow):
         language_selction_layout.addWidget(source_language_combobox)
         language_selction_layout.addWidget(swap_language_button)
         language_selction_layout.addWidget(dest_language_combobox)
+        language_selction_layout.setSpacing(10) # Set the spacing between the language selection sections
+        language_selction_layout.setContentsMargins(10, 10, 10, 10) # Set the margins for the language selection sections
         
         # Text input section
         text_area_layout = QHBoxLayout() # Create a horizontal layout
@@ -67,26 +71,51 @@ class TranslatorApp(QMainWindow):
         input_text.setPlaceholderText("Enter text to translate...") # Add placeholder text
         
         # Output text area
-        output_text = QPlainTextEdit()
-        output_text.setReadOnly(True)
+        output_text = QPlainTextEdit() # Create a plain text edit for the output text
+        output_text.setReadOnly(True) # Set the output text area to read only
         
         # Add the input and output text areas to the layout
         text_area_layout.addWidget(input_text)
         text_area_layout.addWidget(output_text)
+        text_area_layout.setSpacing(10) # Set the spacing between the text areas
+        text_area_layout.setContentsMargins(10, 10, 10, 10) # Set the margins for the text areas
+          
+        # Input text controls
+        inputControlsLayout = QHBoxLayout()
+        spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        inputControlsLayout.addItem(spacer) # Add the spacer to the text controls layout
         
+        # Add the input text controls to the layout
+        inputControlsLayout.addWidget(input_speaker_icon)
+        inputControlsLayout.setSpacing(10)
+        inputControlsLayout.setContentsMargins(10, 10, 10, 10)
+          
+        # Output text controls
+        outputControlsLayout = QHBoxLayout()
+        spacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        outputControlsLayout.addItem(spacer) # Add the spacer to the text controls layout
+        
+        # Add the output text controls to the layout 
+        outputControlsLayout.addWidget(output_speaker_icon)
+        outputControlsLayout.addWidget(copy_icon)
+        outputControlsLayout.addWidget(heart_icon)
+        outputControlsLayout.setSpacing(10)
+        outputControlsLayout.setContentsMargins(10, 10, 10, 10)
+              
         # Add all the sections to the main layout
         layout.addLayout(header_icons) # Add the header icons to the main layout
         layout.addWidget(image_label) # Add the logo image to the main layout
         layout.addLayout(language_selction_layout) # Add the language selection section to the main layout
         layout.addLayout(text_area_layout) # Add the text area section to the main layout
+        layout.addLayout(outputControlsLayout) # Add the output text controls to the main layout
         
         # Set the main layout to the main widget
         main = QWidget()
         main.setLayout(layout)
         self.setCentralWidget(main)
         self.setWindowTitle("Lingualink Translator") # Set the window title
-        self.setWindowIcon(QIcon("images/icon.png"))
-        self.setGeometry(100, 100, 714, 520) # Set the window geometry
+        self.setWindowIcon(QIcon("images/icon.png")) # Set the window icon
+        self.setFixedSize(714, 520) # Set the window size
         self.show() # Show the window
             
     # Method to translate the text
