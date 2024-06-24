@@ -8,8 +8,8 @@ class TranslatorApp(QMainWindow):
     # Constructor
     def __init__(self):
         super().__init__()
-        translator = Translator()
-        self.initUI()
+        self.translator = Translator() # Create a translator object
+        self.initUI() # Initialize the UI
      
     # Initialize the UI   
     def initUI(self):
@@ -21,8 +21,7 @@ class TranslatorApp(QMainWindow):
         favorites_icon = QPushButton("⭐")
         heart_icon = QPushButton("❤️")
         history_icon = QPushButton("🕒")
-        input_speaker_icon = QPushButton("🔊")
-        output_speaker_icon = QPushButton("🔊")
+        speaker_icon = QPushButton("🔊")
         copy_icon = QPushButton("📋")
         
         # Header section
@@ -50,16 +49,16 @@ class TranslatorApp(QMainWindow):
                        
         # Swap language button
         swap_language_button = QPushButton("🔄")
-        # Add functionalty for later :]
+        swap_language_button.clicked.connect(lambda: self.switch_languages(source_language_combobox,dest_language_combobox)) # When the swap button is clicked, call the switch_languages method
         
         # Target language selection section
         dest_language_combobox = QComboBox() # Create a combo box for the source language
         dest_language_combobox.addItems(LANGUAGES.values()) # Add the languages to the combo box
         
         # Add the source language, swap button and target language to the layout
-        language_selction_layout.addWidget(source_language_combobox)
-        language_selction_layout.addWidget(swap_language_button)
-        language_selction_layout.addWidget(dest_language_combobox)
+        language_selction_layout.addWidget(source_language_combobox) # Add the source language combo box
+        language_selction_layout.addWidget(swap_language_button) # Add the swap button
+        language_selction_layout.addWidget(dest_language_combobox) # Add the target language combo box
         language_selction_layout.setSpacing(10) # Set the spacing between the language selection sections
         language_selction_layout.setContentsMargins(10, 10, 10, 10) # Set the margins for the language selection sections
         
@@ -79,49 +78,56 @@ class TranslatorApp(QMainWindow):
         text_area_layout.addWidget(output_text)
         text_area_layout.setSpacing(10) # Set the spacing between the text areas
         text_area_layout.setContentsMargins(10, 10, 10, 10) # Set the margins for the text areas
-          
-        # Input text controls
-        inputControlsLayout = QHBoxLayout()
-        spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        inputControlsLayout.addItem(spacer) # Add the spacer to the text controls layout
-        
-        # Add the input text controls to the layout
-        inputControlsLayout.addWidget(input_speaker_icon)
-        inputControlsLayout.setSpacing(10)
-        inputControlsLayout.setContentsMargins(10, 10, 10, 10)
-          
-        # Output text controls
-        outputControlsLayout = QHBoxLayout()
+                
+        # text controls
+        textControlsLayout = QHBoxLayout()
         spacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        outputControlsLayout.addItem(spacer) # Add the spacer to the text controls layout
+        textControlsLayout.addItem(spacer) # Add the spacer to the text controls layout
         
-        # Add the output text controls to the layout 
-        outputControlsLayout.addWidget(output_speaker_icon)
-        outputControlsLayout.addWidget(copy_icon)
-        outputControlsLayout.addWidget(heart_icon)
-        outputControlsLayout.setSpacing(10)
-        outputControlsLayout.setContentsMargins(10, 10, 10, 10)
+        # Translate button
+        translate_button = QPushButton("Translate")
+        # When the translate button is clicked, call the translate_text method
+        translate_button.clicked.connect(lambda: self.translate_text(source_language_combobox.currentText(), dest_language_combobox.currentText(), input_text.toPlainText(), output_text))        
+        
+        # Add the output text controls to the layout
+        textControlsLayout.addWidget(translate_button, 1, Qt.AlignmentFlag.AlignLeft) 
+        textControlsLayout.addWidget(speaker_icon)
+        textControlsLayout.addWidget(copy_icon)
+        textControlsLayout.addWidget(heart_icon)
+        textControlsLayout.setSpacing(10)
+        textControlsLayout.setContentsMargins(10, 10, 10, 10)
               
         # Add all the sections to the main layout
         layout.addLayout(header_icons) # Add the header icons to the main layout
         layout.addWidget(image_label) # Add the logo image to the main layout
         layout.addLayout(language_selction_layout) # Add the language selection section to the main layout
         layout.addLayout(text_area_layout) # Add the text area section to the main layout
-        layout.addLayout(outputControlsLayout) # Add the output text controls to the main layout
+        layout.addLayout(textControlsLayout) # Add the output text controls to the main layout
         
         # Set the main layout to the main widget
         main = QWidget()
-        main.setLayout(layout)
-        self.setCentralWidget(main)
+        main.setLayout(layout) # Set the layout of the main widget
+        self.setCentralWidget(main) # Set the main widget as the central widget
         self.setWindowTitle("Lingualink Translator") # Set the window title
         self.setWindowIcon(QIcon("images/icon.png")) # Set the window icon
         self.setFixedSize(714, 520) # Set the window size
         self.show() # Show the window
             
     # Method to translate the text
-    def translate_text(self):
-        pass
+    def translate_text(self, source_lang, dest_lang, text, output_text):
+        if not text:
+            return output_text.setPlainText("Please enter text to translate")
+        result = self.translator.translate(text, src=source_lang, dest=dest_lang)
+        return output_text.setPlainText(result.text)
     
+    # Method to switch languages
+    def switch_languages(self, source_combobox, dest_combobox):
+        # Get the current index of the source and target language combo boxes
+        source_index = source_combobox.currentIndex()
+        dest_index = dest_combobox.currentIndex()
+        source_combobox.setCurrentIndex(dest_index)
+        dest_combobox.setCurrentIndex(source_index)
+           
     # Method to speak the text
     def speak_text(self):
         pass
@@ -140,10 +146,6 @@ class TranslatorApp(QMainWindow):
     
     # Method to view settings
     def view_settings(self):
-        pass
-    
-    # Method to switch languages
-    def switch_languages(self):
         pass
  
 # Run the application
