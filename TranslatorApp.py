@@ -46,6 +46,7 @@ class TranslatorApp(QMainWindow):
         # Source language selection section
         source_language_combobox = QComboBox() # Create a combo box for the source language
         source_language_combobox.addItems(LANGUAGES.values()) # Add the languages to the combo box
+        source_language_combobox.setCurrentText("english") # Set the default language to English
                        
         # Swap language button
         swap_language_button = QPushButton("🔄")
@@ -54,6 +55,7 @@ class TranslatorApp(QMainWindow):
         # Target language selection section
         dest_language_combobox = QComboBox() # Create a combo box for the source language
         dest_language_combobox.addItems(LANGUAGES.values()) # Add the languages to the combo box
+        dest_language_combobox.setCurrentText("spanish") # Set the default language to Spanish
         
         # Add the source language, swap button and target language to the layout
         language_selction_layout.addWidget(source_language_combobox) # Add the source language combo box
@@ -125,6 +127,7 @@ class TranslatorApp(QMainWindow):
         # Get the current index of the source and target language combo boxes
         source_index = source_combobox.currentIndex()
         dest_index = dest_combobox.currentIndex()
+        # Set the current index of the source and target language combo boxes
         source_combobox.setCurrentIndex(dest_index)
         dest_combobox.setCurrentIndex(source_index)
            
