@@ -2,6 +2,9 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout,
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 from googletrans import Translator, LANGUAGES # Import the required libraries
+from gtts import gTTS
+import pygame
+import tempfile
 
 class TranslatorApp(QMainWindow):
     
@@ -20,8 +23,7 @@ class TranslatorApp(QMainWindow):
         settings_icon = QPushButton("⚙️")
         favorites_icon = QPushButton("⭐")
         heart_icon = QPushButton("❤️")
-        history_icon = QPushButton("🕒")
-        speaker_icon = QPushButton("🔊")
+        history_icon = QPushButton("🕒")        
         copy_icon = QPushButton("📋")
         
         # Header section
@@ -89,7 +91,11 @@ class TranslatorApp(QMainWindow):
         # Translate button
         translate_button = QPushButton("Translate")
         # When the translate button is clicked, call the translate_text method
-        translate_button.clicked.connect(lambda: self.translate_text(source_language_combobox.currentText(), dest_language_combobox.currentText(), input_text.toPlainText(), output_text))        
+        translate_button.clicked.connect(lambda: self.translate_text(source_language_combobox.currentText(), dest_language_combobox.currentText(), input_text.toPlainText(), output_text)) 
+        
+        #Speaker button actions
+        speaker_icon = QPushButton("🔊")
+        speaker_icon.clicked.connect(lambda: self.speak_text(str(output_text.toPlainText()),dest_language_combobox.currentText())) # When the speaker icon is clicked, call the speak_text method      
         
         # Add the output text controls to the layout
         textControlsLayout.addWidget(translate_button, 1, Qt.AlignmentFlag.AlignLeft) 
@@ -114,6 +120,7 @@ class TranslatorApp(QMainWindow):
         self.setWindowIcon(QIcon("images/icon.png")) # Set the window icon
         self.setFixedSize(714, 520) # Set the window size
         self.show() # Show the window
+    
             
     # Method to translate the text
     def translate_text(self, source_lang, dest_lang, text, output_text):
@@ -130,10 +137,33 @@ class TranslatorApp(QMainWindow):
         # Set the current index of the source and target language combo boxes
         source_combobox.setCurrentIndex(dest_index)
         dest_combobox.setCurrentIndex(source_index)
+    
+    # Method to covert the langauge value to the language code
+    def get_lang_code(self, lang):
+        return [k for k, v in LANGUAGES.items() if v == lang][0]     
            
     # Method to speak the text
-    def speak_text(self):
-        pass
+    def speak_text(self,text,lang):
+        lang = self.get_lang_code(lang)
+        try:
+            # Create a text to speech object
+            tts = gTTS(text=text, lang=lang, slow=False)
+            # Save the audio to the temporary file
+            temp_file = tempfile.NamedTemporaryFile(delete=True)
+            tts.save(temp_file.name + ".mp3")
+            # Initialize pygame mixer
+            pygame.mixer.init()
+            # Load the audio file
+            pygame.mixer.music.load(temp_file.name + ".mp3")
+            # Play the audio
+            pygame.mixer.music.play()
+            # Wait until the audio finishes playing
+            while pygame.mixer.music.get_busy():
+                continue
+            # Clean up the temporary file
+            temp_file.close()  
+        except Exception as e:
+            print(f"Error occurred: {e}")
     
     # Method to copy the text
     def copy_text(self):
