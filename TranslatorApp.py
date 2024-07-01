@@ -12,6 +12,7 @@ class TranslatorApp(QMainWindow):
     # Constructor
     def __init__(self):
         super().__init__()
+        self.favorites = {1: {'Text': 'Hello', 'Transaltion': 'Hola'}, 2: {'Text': 'Bye', 'Translation': 'Adios'}}
         self.translator = Translator() # Create a translator object
         self.initUI() # Initialize the UI
      
@@ -188,7 +189,11 @@ class TranslatorApp(QMainWindow):
         msg.exec()
         
     # Method to add to favorites
-    def add_to_favorites(self, text, translation):        
+    def add_to_favorites(self, text, translation):
+        # Get the number of items in the favorites dictionary
+        num_items = len(self.favorites)
+        # Add the text and translation to the favorites dictionary
+        self.favorites[num_items + 1] = {'Text': text, 'Translation': translation}      
         # Show a message box to indicate that the text has been added to favorites
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Information)
