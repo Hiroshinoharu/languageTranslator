@@ -22,8 +22,11 @@ class TranslatorApp(QMainWindow):
         
         #Variables set for icon buttons
         settings_icon = QPushButton("⚙️")
-        favorites_icon = QPushButton("⭐")
-        history_icon = QPushButton("🕒")        
+        history_icon = QPushButton("🕒") 
+        
+        # Star button actions
+        star_icon = QPushButton("⭐")
+        star_icon.clicked.connect(lambda: self.view_favorites()) # When the star icon is clicked, call the view_favorites method       
         
         # Header section
         header_icons = QHBoxLayout() # Create a horizontal layout
@@ -33,7 +36,7 @@ class TranslatorApp(QMainWindow):
         # Adding icons to the top right of the GUI
         header_icons.addWidget(settings_icon) # Add the settings icon
         header_icons.addWidget(history_icon) # Add the history icon
-        header_icons.addWidget(favorites_icon) # Add the favorites icon
+        header_icons.addWidget(star_icon) # Add the favorites icon
         
         # Logo image
         image_label = QLabel()
@@ -102,7 +105,7 @@ class TranslatorApp(QMainWindow):
         
         # Heart button actions
         heart_icon = QPushButton("❤️")
-        heart_icon.clicked.connect(lambda: self.add_to_favorites()) # When the heart icon is clicked, call the add_to_favorites method
+        heart_icon.clicked.connect(lambda: self.add_to_favorites(input_text.toPlainText(),output_text.toPlainText())) # When the heart icon is clicked, call the add_to_favorites method
         
         # Add the output text controls to the layout
         textControlsLayout.addWidget(translate_button, 1, Qt.AlignmentFlag.AlignLeft) 
@@ -177,15 +180,25 @@ class TranslatorApp(QMainWindow):
     def copy_text(self,output_text):
         pyperclip.copy(output_text) # Copy the text to the clipboard
         # Show a message box to indicate that the text has been copied
-        msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Icon.Information)
-        msg.setText("Text copied to clipboard")
+        msg = QMessageBox(self) # Create a message box
+        msg.setIcon(QMessageBox.Icon.Information) # Set the message icon
+        msg.setText("Text copied to clipboard") # Set the message text
         msg.setWindowTitle("Copied")
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg.exec()
         
     # Method to add to favorites
-    def add_to_favorites(self):
+    def add_to_favorites(self, text, translation):        
+        # Show a message box to indicate that the text has been added to favorites
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.setText("Text added to favorites")
+        msg.setWindowTitle("Favorites")
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg.exec()
+        
+    # Method to view favorites
+    def view_favorites(self):
         pass
     
     # Method to view history
