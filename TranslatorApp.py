@@ -9,7 +9,22 @@ import pyperclip
 from FavoritesWindow import FavoritesWindow
 
 class TranslatorApp(QMainWindow):
-    
+    """
+    A GUI application for translating text using the Lingualink Translator.
+
+    Attributes:
+        favorites (dict): A dictionary to store favorite translations.
+
+    Methods:
+        __init__(): Initializes the TranslatorApp class.
+        initUI(): Initializes the user interface.
+        translate_text(): Translates the input text.
+        switch_languages(): Switches the source and target languages.
+        get_lang_code(): Converts the language value to the language code.
+        speak_text(): Speaks the translated text.
+        copy_text(): Copies the translated text to the clipboard.
+        add_to_favorites(): Adds the translation to favorites.
+    """
     # Favorites dictionary
     favorites = {}
     

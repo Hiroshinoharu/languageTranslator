@@ -2,7 +2,18 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget, QScrollArea, QLabel, QPushButt
 from PyQt6.QtCore import Qt
 
 class FavoritesWindow(QWidget):
-    def __init__(self,favorites):
+    """
+    A window that displays a list of favorites.
+
+    Args:
+        favorites (dict): A dictionary containing the favorite items.
+
+    Attributes:
+        favorites (dict): A dictionary containing the favorite items.
+
+    """
+
+    def __init__(self, favorites):
         super().__init__()
         self.setWindowTitle("Favorites")
         self.setFixedSize(400, 400)
@@ -38,8 +49,8 @@ class FavoritesWindow(QWidget):
         close_button = QPushButton("Close")
         close_button.clicked.connect(self.close)
         layout.addWidget(close_button, alignment=Qt.AlignmentFlag.AlignCenter)
-        
-        
+
+
         self.setLayout(layout)
         
         
