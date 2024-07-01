@@ -1,10 +1,11 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QComboBox, QPlainTextEdit, QPushButton, QSizePolicy, QSpacerItem
+from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QComboBox, QPlainTextEdit, QPushButton, QSizePolicy, QSpacerItem, QMessageBox
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 from googletrans import Translator, LANGUAGES # Import the required libraries
 from gtts import gTTS
 import pygame
 import tempfile
+import pyperclip
 
 class TranslatorApp(QMainWindow):
     
@@ -22,9 +23,7 @@ class TranslatorApp(QMainWindow):
         #Variables set for icon buttons
         settings_icon = QPushButton("⚙️")
         favorites_icon = QPushButton("⭐")
-        heart_icon = QPushButton("❤️")
         history_icon = QPushButton("🕒")        
-        copy_icon = QPushButton("📋")
         
         # Header section
         header_icons = QHBoxLayout() # Create a horizontal layout
@@ -95,7 +94,15 @@ class TranslatorApp(QMainWindow):
         
         #Speaker button actions
         speaker_icon = QPushButton("🔊")
-        speaker_icon.clicked.connect(lambda: self.speak_text(str(output_text.toPlainText()),dest_language_combobox.currentText())) # When the speaker icon is clicked, call the speak_text method      
+        speaker_icon.clicked.connect(lambda: self.speak_text(str(output_text.toPlainText()),dest_language_combobox.currentText())) # When the speaker icon is clicked, call the speak_text method
+        
+        # Copy button actions
+        copy_icon = QPushButton("📋")
+        copy_icon.clicked.connect(lambda: self.copy_text(str(output_text.toPlainText()))) # When the copy icon is clicked, call the copy_text method
+        
+        # Heart button actions
+        heart_icon = QPushButton("❤️")
+        heart_icon.clicked.connect(lambda: self.add_to_favorites()) # When the heart icon is clicked, call the add_to_favorites method
         
         # Add the output text controls to the layout
         textControlsLayout.addWidget(translate_button, 1, Qt.AlignmentFlag.AlignLeft) 
@@ -140,6 +147,7 @@ class TranslatorApp(QMainWindow):
     
     # Method to covert the langauge value to the language code
     def get_lang_code(self, lang):
+        # Get the language code from the language value
         return [k for k, v in LANGUAGES.items() if v == lang][0]     
            
     # Method to speak the text
@@ -166,9 +174,16 @@ class TranslatorApp(QMainWindow):
             print(f"Error occurred: {e}")
     
     # Method to copy the text
-    def copy_text(self):
-        pass
-    
+    def copy_text(self,output_text):
+        pyperclip.copy(output_text) # Copy the text to the clipboard
+        # Show a message box to indicate that the text has been copied
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.setText("Text copied to clipboard")
+        msg.setWindowTitle("Copied")
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg.exec()
+        
     # Method to add to favorites
     def add_to_favorites(self):
         pass
