@@ -6,13 +6,16 @@ from gtts import gTTS
 import pygame
 import tempfile
 import pyperclip
+from FavoritesWindow import FavoritesWindow
 
 class TranslatorApp(QMainWindow):
+    
+    # Favorites dictionary
+    favorites = {}
     
     # Constructor
     def __init__(self):
         super().__init__()
-        self.favorites = {1: {'Text': 'Hello', 'Transaltion': 'Hola'}, 2: {'Text': 'Bye', 'Translation': 'Adios'}}
         self.translator = Translator() # Create a translator object
         self.initUI() # Initialize the UI
      
@@ -204,7 +207,8 @@ class TranslatorApp(QMainWindow):
         
     # Method to view favorites
     def view_favorites(self):
-        pass
+        self.favorites_window = FavoritesWindow(self.favorites)
+        self.favorites_window.show()
     
     # Method to view history
     def view_history(self):
