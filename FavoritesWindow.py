@@ -12,7 +12,7 @@ class FavoritesWindow(QWidget):
         favorites (dict): A dictionary containing the favorite items.
 
     """
-
+    # Initialize the class
     def __init__(self, favorites):
         super().__init__()
         self.setWindowTitle("Favorites")
@@ -33,11 +33,16 @@ class FavoritesWindow(QWidget):
         # Scroll layout
         scroll_layout = QVBoxLayout()
         
-        for key, value in favorites.items():
-            # Create a label
-            label = QLabel(f"{key}: {value}")
-            label.setWordWrap(True)
-            scroll_layout.addWidget(label)
+        if isinstance(favorites, dict):
+            for key, value in favorites.items():
+                # Create a label with formatted text
+                label = QLabel(f"<b>{key}:</b> {value}")
+                label.setWordWrap(True)
+                label.setStyleSheet("QLabel { font-weight: bold; }")  # Add bold font style
+                scroll_layout.addWidget(label)
+        else:
+            error_label = QLabel("Error: Favorites is not a dictionary.")
+            scroll_layout.addWidget(error_label)
             
         scroll_content.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_content)
@@ -50,7 +55,4 @@ class FavoritesWindow(QWidget):
         close_button.clicked.connect(self.close)
         layout.addWidget(close_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
-
         self.setLayout(layout)
-        
-        
