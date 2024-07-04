@@ -31,6 +31,9 @@ class TranslatorApp(QMainWindow):
     
     # Define a class variable dictionary to store favorites
     favorites = {}
+    
+    # Define a class variable dictionary to store history
+    history = {}
 
     # Define the constructor
     def __init__(self):

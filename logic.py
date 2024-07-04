@@ -45,7 +45,11 @@ class TranslatorLogic:
     
     def add_to_favorites(self, text, translation, source_lang, dest_lang, favorites):
         num_items = len(favorites)  # Getting the number of items in the favorites list
-        favorites[num_items + 1] = {self.get_lang_code(source_lang): text, self.get_lang_code(dest_lang): translation}  # Adding the translation to the favorites dictionary
+        favorites[num_items + 1] = {source_lang: text, dest_lang: translation}  # Adding the translation to the favorites dictionary
+        
+    def add_to_history(self, text, translation, source_lang, dest_lang, history):
+        num_items = len(history)  # Getting the number of items in the history list
+        history[num_items + 1] = {source_lang: text, dest_lang: translation} # Adding the translation to the history dictionary
     
     # Helper methods
     @staticmethod
