@@ -46,10 +46,6 @@ class TranslatorApp(QMainWindow):
         # Create a vertical layout
         layout = QVBoxLayout()
         
-        # Create buttons for settings and history
-        settings_icon = QPushButton("⚙️")
-        settings_icon.clicked.connect(lambda: self.view_settings())
-        
         # Create a history icon button
         history_icon = QPushButton("🕒") 
         history_icon.clicked.connect(lambda: self.view_history())
@@ -62,7 +58,6 @@ class TranslatorApp(QMainWindow):
         header_icons = QHBoxLayout()
         spacer  = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         header_icons.addItem(spacer)
-        header_icons.addWidget(settings_icon)
         header_icons.addWidget(history_icon)
         header_icons.addWidget(star_icon)
         
@@ -226,7 +221,3 @@ class TranslatorApp(QMainWindow):
     def view_history(self):
         self.history_window = HistoryWindow(self.history)
         self.history_window.show()
-    
-    # Define the method to view the settings
-    def view_settings(self):
-        pass
