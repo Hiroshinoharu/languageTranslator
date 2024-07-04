@@ -3,7 +3,7 @@ from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 from FavoritesWindow import FavoritesWindow
 from logic import TranslatorLogic
-
+from HistoryWindow import HistoryWindow
 
 class TranslatorApp(QMainWindow): 
     """
@@ -48,7 +48,11 @@ class TranslatorApp(QMainWindow):
         
         # Create buttons for settings and history
         settings_icon = QPushButton("⚙️")
+        settings_icon.clicked.connect(lambda: self.view_settings())
+        
+        # Create a history icon button
         history_icon = QPushButton("🕒") 
+        history_icon.clicked.connect(lambda: self.view_history())
         
         # Create a star icon button
         star_icon = QPushButton("⭐")
@@ -118,12 +122,15 @@ class TranslatorApp(QMainWindow):
         translate_button = QPushButton("Translate")
         translate_button.clicked.connect(self.translate_text)
         
+        # Create a speaker icon button
         speaker_icon = QPushButton("🔊")
         speaker_icon.clicked.connect(self.speak_text)
         
+        # Create a copy icon button
         copy_icon = QPushButton("📋")
         copy_icon.clicked.connect(self.copy_text)
         
+        # Create a heart icon button
         heart_icon = QPushButton("❤️")
         heart_icon.clicked.connect(self.add_to_favorites)
         
@@ -154,7 +161,7 @@ class TranslatorApp(QMainWindow):
         self.setWindowIcon(QIcon("images/icon.png"))
         
         # Set the fixed size of the main window
-        self.setFixedSize(714, 520)
+        self.resize(714, 520)
         
         # Show the main window
         self.show()
@@ -166,6 +173,7 @@ class TranslatorApp(QMainWindow):
         text = self.input_text.toPlainText()
         translation = self.translator.translate_text(source_lang, dest_lang, text)
         self.output_text.setPlainText(translation)
+        self.add_to_history()
     
     # Define the method to switch the languages
     def switch_languages(self):
@@ -192,12 +200,22 @@ class TranslatorApp(QMainWindow):
         source_lang = self.source_language_combobox.currentText()
         dest_lang = self.dest_language_combobox.currentText()
         self.translator.add_to_favorites(text, translation, source_lang, dest_lang, self.favorites)
+        
+        # Show a message box to indicate that the text has been added to favorites
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Icon.Information)
         msg.setText("Text added to favorites")
         msg.setWindowTitle("Favorites")
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg.exec()
+      
+    # Define the method to add the text to history
+    def add_to_history(self):
+        text = self.input_text.toPlainText()
+        translation = self.output_text.toPlainText()
+        source_lang = self.source_language_combobox.currentText()
+        dest_lang = self.dest_language_combobox.currentText()
+        self.translator.add_to_history(text, translation, source_lang, dest_lang, self.history)
         
     # Define the method to view the favorites window
     def view_favorites(self):
@@ -206,7 +224,8 @@ class TranslatorApp(QMainWindow):
     
     # Define the method to view the history
     def view_history(self):
-        pass
+        self.history_window = HistoryWindow(self.history)
+        self.history_window.show()
     
     # Define the method to view the settings
     def view_settings(self):

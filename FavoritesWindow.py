@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QScrollArea, QLabel, QPushButton
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon 
 
 class FavoritesWindow(QWidget):
     """
@@ -15,8 +16,9 @@ class FavoritesWindow(QWidget):
     # Initialize the class
     def __init__(self, favorites):
         super().__init__()
-        self.setWindowTitle("Favorites")
-        self.setFixedSize(400, 400)
+        self.setWindowTitle("Favorites") # Set the window title
+        self.setFixedSize(400, 400) # Set the window size
+        self.setWindowIcon(QIcon("images/icon.png")) # Set the window icon
         
         # Create a layout
         layout = QVBoxLayout()
@@ -36,12 +38,13 @@ class FavoritesWindow(QWidget):
         if isinstance(favorites, dict):
             for key, value in favorites.items():
                 # Create a label with formatted text
-                label = QLabel(f"<b>{key}:</b> {value}")
+                label = QLabel(f"<h3>{key}</h3><p>{value}</p>")
                 label.setWordWrap(True)
-                label.setStyleSheet("QLabel { font-weight: bold; }")  # Add bold font style
+                label.setStyleSheet("QLabel { font-weight: bold; font-size: 14px; }")  # Add bold font style and increase font size
                 scroll_layout.addWidget(label)
         else:
-            error_label = QLabel("Error: Favorites is not a dictionary.")
+            error_label = QLabel("<h3>Error: Favorites is not a dictionary.</h3>")
+            error_label.setStyleSheet("QLabel { color: red; font-size: 14px; }")  # Add red color and increase font size
             scroll_layout.addWidget(error_label)
             
         scroll_content.setLayout(scroll_layout)
