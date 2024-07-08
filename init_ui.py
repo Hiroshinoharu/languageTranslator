@@ -31,7 +31,6 @@ class TranslatorApp(QMainWindow):
         add_to_favorites: Adds the translation to favorites.
         view_favorites: Opens the favorites window.
         view_history: Opens the history window.
-        view_settings: Opens the settings window.
     """
     
     # Define a class variable dictionary to store favorites
@@ -120,6 +119,9 @@ class TranslatorApp(QMainWindow):
         text_area_layout.addWidget(self.output_text)
         text_area_layout.setSpacing(10)
         text_area_layout.setContentsMargins(10, 10, 10, 10)
+        
+        # Set the alignment of the text area layout
+        text_area_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 
         # Create a horizontal layout for the text controls
         textControlsLayout = QHBoxLayout()
@@ -196,15 +198,15 @@ class TranslatorApp(QMainWindow):
     def switch_languages(self):
         source_index = self.source_language_combobox.currentIndex()
         dest_index = self.dest_language_combobox.currentIndex()
-        self.source_language_combobox.setCurrentIndex(dest_index)
-        self.dest_language_combobox.setCurrentIndex(source_index)
+        self.source_language_combobox.setCurrentIndex(dest_index) # Set the source language to the destination language
+        self.dest_language_combobox.setCurrentIndex(source_index) # Set the destination language to the source language
     
     # Define the method to speak the text
     def speak_text(self):
-        text = self.output_text.toPlainText()
-        lang = self.dest_language_combobox.currentText()
+        text = self.output_text.toPlainText() # Get the translated text
+        lang = self.dest_language_combobox.currentText() # Get the destination language
         try:
-            self.translator.speak_text(text, lang)
+            self.translator.speak_text(text, lang) # Speak the translated text
         except Exception as e:
             logging.error(f"Error occurred: {e}")
             QMessageBox.critical(self, "Error", "An error occurred while speaking the text.")
@@ -220,11 +222,11 @@ class TranslatorApp(QMainWindow):
             
     # Define the method to add the text to favorites
     def add_to_favorites(self):
-        text = self.input_text.toPlainText()
-        translation = self.output_text.toPlainText()
-        source_lang = self.source_language_combobox.currentText()
-        dest_lang = self.dest_language_combobox.currentText()
-        self.translator.add_to_favorites(text, translation, source_lang, dest_lang, self.favorites)
+        text = self.input_text.toPlainText() # Get the input text
+        translation = self.output_text.toPlainText() # Get the translated text
+        source_lang = self.source_language_combobox.currentText() # Get the source language
+        dest_lang = self.dest_language_combobox.currentText() # Get the destination language
+        self.translator.add_to_favorites(text, translation, source_lang, dest_lang, self.favorites) # Add the translation to favorites  
         try:
             # Show a message box to indicate that the text has been added to favorites
             msg = QMessageBox(self)
