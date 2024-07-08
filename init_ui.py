@@ -207,9 +207,9 @@ class TranslatorApp(QMainWindow):
         
     # Method to check if the language from the source and destination are the same
     def check_same_language(self):
-        source_lang = self.source_language_combobox.currentText()
-        dest_lang = self.dest_language_combobox.currentText()
-        if source_lang == dest_lang:
+        source_lang = self.source_language_combobox.currentText() # Get the source language
+        dest_lang = self.dest_language_combobox.currentText() # Get the destination language
+        if source_lang == dest_lang: # Check if the source and destination languages are the same
             QMessageBox.critical(self, "Error", "Source and destination languages cannot be the same.")
             source_lang = "english"
             dest_lang = "spanish"
