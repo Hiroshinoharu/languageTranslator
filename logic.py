@@ -1,7 +1,7 @@
-from gtts import gTTS
-import pygame
-import tempfile
-import pyperclip
+from gtts import gTTS # Importing the gTTS library
+import pygame # Importing the pygame library
+import tempfile # Importing the tempfile library
+import pyperclip # Importing the pyperclip library
 
 from googletrans import Translator, LANGUAGES  # Importing necessary libraries
 from PyQt6.QtWidgets import QMessageBox  # Importing QMessageBox from PyQt6
@@ -17,6 +17,11 @@ class TranslatorLogic:
         return result.text  # Returning the translated text
     
     def speak_text(self, text, lang):
+        # Check if the text is empty
+        if text == "":
+            QMessageBox.critical(None, "Error", "Please enter text to speak")  # Displaying an error message if the text is empty
+            return
+        
         lang_code = self.get_lang_code(lang)  # Getting the language code
         try:
             tts = gTTS(text=text, lang=lang_code, slow=False)  # Creating a gTTS object for text-to-speech

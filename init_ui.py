@@ -1,9 +1,14 @@
+import sys
+import logging
 from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QComboBox, QPlainTextEdit, QPushButton, QSizePolicy, QSpacerItem, QMessageBox
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt
 from FavoritesWindow import FavoritesWindow
 from logic import TranslatorLogic
 from HistoryWindow import HistoryWindow
+
+# Configure the logging
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 class TranslatorApp(QMainWindow): 
     """
@@ -38,7 +43,11 @@ class TranslatorApp(QMainWindow):
     # Define the constructor
     def __init__(self):
         super().__init__()
-        self.translator = TranslatorLogic()
+        try:
+            self.translator = TranslatorLogic()
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            sys.exit(1)
         self.initUI()
      
     # Define the method to initialize the user interface
@@ -52,7 +61,7 @@ class TranslatorApp(QMainWindow):
         
         # Create a star icon button
         star_icon = QPushButton("⭐")
-        star_icon.clicked.connect(lambda: self.view_favorites())
+        star_icon.clicked.connect(self.view_favorites)
         
         # Create a horizontal layout for the header icons
         header_icons = QHBoxLayout()
@@ -63,8 +72,12 @@ class TranslatorApp(QMainWindow):
         
         # Create a label for the image
         image_label = QLabel()
-        pixmap = QPixmap("images/logo.png")
-        image_label.setPixmap(pixmap)
+        try:
+            pixmap = QPixmap("images/logo.png")
+            image_label.setPixmap(pixmap)
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while loading the image.")
         image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 
         # Create a horizontal layout for the language selection
@@ -153,7 +166,11 @@ class TranslatorApp(QMainWindow):
         
         # Set the window title and icon
         self.setWindowTitle("Lingualink Translator")
-        self.setWindowIcon(QIcon("images/icon.png"))
+        try:
+            self.setWindowIcon(QIcon("images/icon.png"))
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while loading the icon.")
         
         # Set the fixed size of the main window
         self.resize(714, 520)
@@ -166,9 +183,13 @@ class TranslatorApp(QMainWindow):
         source_lang = self.source_language_combobox.currentText()
         dest_lang = self.dest_language_combobox.currentText()
         text = self.input_text.toPlainText()
-        translation = self.translator.translate_text(source_lang, dest_lang, text)
-        self.output_text.setPlainText(translation)
-        self.add_to_history()
+        try:
+            translation = self.translator.translate_text(source_lang, dest_lang, text)
+            self.output_text.setPlainText(translation)
+            self.add_to_history()
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while translating the text.")
     
     # Define the method to switch the languages
     def switch_languages(self):
@@ -181,13 +202,21 @@ class TranslatorApp(QMainWindow):
     def speak_text(self):
         text = self.output_text.toPlainText()
         lang = self.dest_language_combobox.currentText()
-        self.translator.speak_text(text, lang)
+        try:
+            self.translator.speak_text(text, lang)
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while speaking the text.")
     
     # Define the method to copy the text
     def copy_text(self):
         output_text = self.output_text.toPlainText()
-        self.translator.copy_text(output_text)
-        
+        try:
+            self.translator.copy_text(output_text)
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while copying the text.")
+            
     # Define the method to add the text to favorites
     def add_to_favorites(self):
         text = self.input_text.toPlainText()
@@ -195,14 +224,17 @@ class TranslatorApp(QMainWindow):
         source_lang = self.source_language_combobox.currentText()
         dest_lang = self.dest_language_combobox.currentText()
         self.translator.add_to_favorites(text, translation, source_lang, dest_lang, self.favorites)
-        
-        # Show a message box to indicate that the text has been added to favorites
-        msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Icon.Information)
-        msg.setText("Text added to favorites")
-        msg.setWindowTitle("Favorites")
-        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
-        msg.exec()
+        try:
+            # Show a message box to indicate that the text has been added to favorites
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Icon.Information)
+            msg.setText("Text added to favorites")
+            msg.setWindowTitle("Favorites")
+            msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+            msg.exec()
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while adding the text to favorites.")
       
     # Define the method to add the text to history
     def add_to_history(self):
@@ -210,14 +242,26 @@ class TranslatorApp(QMainWindow):
         translation = self.output_text.toPlainText()
         source_lang = self.source_language_combobox.currentText()
         dest_lang = self.dest_language_combobox.currentText()
-        self.translator.add_to_history(text, translation, source_lang, dest_lang, self.history)
+        try:
+            self.translator.add_to_history(text, translation, source_lang, dest_lang, self.history)
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while adding the text to history.")
         
     # Define the method to view the favorites window
     def view_favorites(self):
-        self.favorites_window = FavoritesWindow(self.favorites)
-        self.favorites_window.show()
+        try:
+            self.favorites_window = FavoritesWindow(self.favorites)
+            self.favorites_window.show()
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while opening the favorites window.")
     
     # Define the method to view the history
     def view_history(self):
-        self.history_window = HistoryWindow(self.history)
-        self.history_window.show()
+        try:
+            self.history_window = HistoryWindow(self.history)
+            self.history_window.show()
+        except Exception as e:
+            logging.error(f"Error occurred: {e}")
+            QMessageBox.critical(self, "Error", "An error occurred while opening the history window.")
