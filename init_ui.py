@@ -168,6 +168,7 @@ class TranslatorApp(QMainWindow):
         self.setWindowTitle("Lingualink Translator")
         try:
             self.setWindowIcon(QIcon("images/icon.png"))
+            self.setWindowIconText("Lingualink Translator")
         except Exception as e:
             logging.error(f"Error occurred: {e}")
             QMessageBox.critical(self, "Error", "An error occurred while loading the icon.")
