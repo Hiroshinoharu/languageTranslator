@@ -71,6 +71,7 @@ class TranslatorLogic:
             
             # Initialize pygame mixer
             pygame.mixer.init()
+            pygame.mixer.music.set_volume(1.0)  # Set the volume to maximum
             print("Pygame mixer initialized")
             
             # Load and play the audio file
