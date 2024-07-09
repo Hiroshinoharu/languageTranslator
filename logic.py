@@ -4,7 +4,7 @@ import tempfile # Importing the tempfile library
 import pyperclip # Importing the pyperclip library
 
 from googletrans import Translator, LANGUAGES  # Importing necessary libraries
-from PyQt6.QtWidgets import QMessageBox  # Importing QMessageBox from PyQt6
+from PyQt6.QtWidgets import QMessageBox  # Importing QMessageBox from PyQt6.QtWidgets
 
 class TranslatorLogic:
     """
