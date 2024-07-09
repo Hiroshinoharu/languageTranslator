@@ -1,10 +1,10 @@
-from gtts import gTTS # Importing the gTTS library
-import pygame # Importing the pygame library
-import tempfile # Importing the tempfile library
-import pyperclip # Importing the pyperclip library
-
-from googletrans import Translator, LANGUAGES  # Importing necessary libraries
-from PyQt6.QtWidgets import QMessageBox  # Importing QMessageBox from PyQt6.QtWidgets
+import os  # Importing the os library  
+import pygame  # Importing the pygame library
+import tempfile  # Importing the tempfile library
+from gtts import gTTS  # Importing the gTTS library
+from PyQt6.QtWidgets import QMessageBox
+import pyperclip  # Importing QMessageBox from PyQt6
+from googletrans import LANGUAGES, Translator # Importing the LANGUAGES dictionary from googletrans
 
 class TranslatorLogic:
     """
@@ -41,23 +41,66 @@ class TranslatorLogic:
         """
         # Check if the text is empty
         if text == "":
-            QMessageBox.critical(None, "Error", "Please enter text to speak")  # Displaying an error message if the text is empty
+            QMessageBox.critical(None, "Error", "Please enter text to speak")
             return
         
         lang_code = self.get_lang_code(lang)  # Getting the language code
+        
+        temp_file_path = ""  # Initialize temp_file_path with an empty string
+        
         try:
-            tts = gTTS(text=text, lang=lang_code, slow=False)  # Creating a gTTS object for text-to-speech
-            temp_file = tempfile.NamedTemporaryFile(delete=True)  # Creating a temporary file
-            tts.save(temp_file.name + ".mp3")  # Saving the speech as an MP3 file
-            pygame.mixer.init()  # Initializing the pygame mixer
-            pygame.mixer.music.load(temp_file.name + ".mp3")  # Loading the MP3 file
-            pygame.mixer.music.play()  # Playing the speech
-            while pygame.mixer.music.get_busy():  # Waiting for the speech to finish playing
-                continue
-            temp_file.close()  # Closing the temporary file
+            tts = gTTS(text=text, lang=lang_code, slow=False)
+            
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
+                temp_file_path = temp_file.name
+                tts.save(temp_file_path)
+                print(f"Temporary file created: {temp_file_path}")  # Log the creation of the temporary file
+            
+            # Check if the temporary file was created successfully
+            if not os.path.exists(temp_file_path):
+                print(f"Temporary file does not exist: {temp_file_path}")
+                return
+
+            # Verify the content of the temporary file
+            file_size = os.path.getsize(temp_file_path)
+            if file_size == 0:
+                print(f"Temporary file is empty: {temp_file_path}")
+                return
+            
+            print(f"Temporary file size: {file_size} bytes")
+            
+            # Initialize pygame mixer
+            pygame.mixer.init()
+            print("Pygame mixer initialized")
+            
+            # Load and play the audio file
+            pygame.mixer.music.load(temp_file_path)
+            print("Audio file loaded into pygame mixer")
+            pygame.mixer.music.play()
+            print("Playing audio")
+
+            while pygame.mixer.music.get_busy():
+                pygame.time.Clock().tick(10)
+            
+            print("Audio playback finished")
+            pygame.mixer.music.stop()
+            pygame.mixer.quit()
         except Exception as e:
             print(f"Error occurred: {e}")  # Printing an error message if an exception occurs
-    
+        finally:
+            # Clean up the temporary file
+            if os.path.exists(temp_file_path):
+                try:
+                    os.remove(temp_file_path)
+                    print(f"Temporary file deleted: {temp_file_path}")  # Log the deletion of the temporary file
+                except Exception as e:
+                    print(f"Error deleting temporary file: {e}")
+                    try:
+                        os.remove(temp_file_path)
+                        print(f"Temporary file deleted: {temp_file_path}")  # Log the deletion of the temporary file
+                    except Exception as e:
+                        print(f"Error deleting temporary file: {e}")
+
     def copy_text(self, output_text):   
         """
         Copies the translated text to the clipboard.
@@ -102,7 +145,7 @@ class TranslatorLogic:
             history (dict): The history dictionary.
         """
         num_items = len(history)  # Getting the number of items in the history list
-        history[num_items + 1] = {source_lang: text, dest_lang: translation} # Adding the translation to the history dictionary
+        history[num_items + 1] = {source_lang: text, dest_lang: translation}  # Adding the translation to the history dictionary
     
     # Helper methods
     @staticmethod
