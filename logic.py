@@ -2,9 +2,9 @@ import os  # Importing the os library
 import pygame  # Importing the pygame library
 import tempfile  # Importing the tempfile library
 from gtts import gTTS  # Importing the gTTS library
-from PyQt6.QtWidgets import QMessageBox
-import pyperclip  # Importing QMessageBox from PyQt6
-from googletrans import LANGUAGES, Translator # Importing the LANGUAGES dictionary from googletrans
+from PyQt6.QtWidgets import QMessageBox # Importing the QMessageBox class from PyQt6
+from googletrans import LANGUAGES, Translator
+import pyperclip # Importing the LANGUAGES dictionary from googletrans
 
 class TranslatorLogic:
     """
@@ -39,41 +39,34 @@ class TranslatorLogic:
             text (str): The text to be spoken.
             lang (str): The language of the text.
         """
-        # Check if the text is empty
-        if text == "":
+        if not text:
             QMessageBox.critical(None, "Error", "Please enter text to speak")
-            return
+            raise ValueError("Please enter text to speak")
         
-        lang_code = self.get_lang_code(lang)  # Getting the language code
-        
-        temp_file_path = ""  # Initialize temp_file_path with an empty string
-        
+        lang_code = self.get_lang_code(lang)
+
         try:
             tts = gTTS(text=text, lang=lang_code, slow=False)
             
             with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
                 temp_file_path = temp_file.name
                 tts.save(temp_file_path)
-                print(f"Temporary file created: {temp_file_path}")  # Log the creation of the temporary file
-            
-            # Check if the temporary file was created successfully
-            if not os.path.exists(temp_file_path):
-                print(f"Temporary file does not exist: {temp_file_path}")
-                return
+                print(f"Temporary file created: {temp_file_path}")
 
-            # Verify the content of the temporary file
-            file_size = os.path.getsize(temp_file_path)
-            if file_size == 0:
-                print(f"Temporary file is empty: {temp_file_path}")
-                return
-            
-            print(f"Temporary file size: {file_size} bytes")
+            if not os.path.exists(temp_file_path) or os.path.getsize(temp_file_path) == 0:
+                print(f"Temporary file is invalid: {temp_file_path}")
+                raise ValueError(f"Temporary file is invalid: {temp_file_path}")
+
+            print(f"Temporary file size: {os.path.getsize(temp_file_path)} bytes")
             
             # Initialize pygame mixer
             pygame.mixer.init()
-            pygame.mixer.music.set_volume(1.0)  # Set the volume to maximum
             print("Pygame mixer initialized")
-            
+
+            # Set the volume to maximum
+            pygame.mixer.music.set_volume(1.0)
+            print(f"Volume set to: {pygame.mixer.music.get_volume()}")
+
             # Load and play the audio file
             pygame.mixer.music.load(temp_file_path)
             print("Audio file loaded into pygame mixer")
@@ -82,25 +75,19 @@ class TranslatorLogic:
 
             while pygame.mixer.music.get_busy():
                 pygame.time.Clock().tick(10)
-            
+
             print("Audio playback finished")
             pygame.mixer.music.stop()
             pygame.mixer.quit()
         except Exception as e:
-            print(f"Error occurred: {e}")  # Printing an error message if an exception occurs
+            print(f"Error occurred: {e}")
         finally:
-            # Clean up the temporary file
             if os.path.exists(temp_file_path):
                 try:
                     os.remove(temp_file_path)
-                    print(f"Temporary file deleted: {temp_file_path}")  # Log the deletion of the temporary file
+                    print(f"Temporary file deleted: {temp_file_path}")
                 except Exception as e:
                     print(f"Error deleting temporary file: {e}")
-                    try:
-                        os.remove(temp_file_path)
-                        print(f"Temporary file deleted: {temp_file_path}")  # Log the deletion of the temporary file
-                    except Exception as e:
-                        print(f"Error deleting temporary file: {e}")
 
     def copy_text(self, output_text):   
         """
