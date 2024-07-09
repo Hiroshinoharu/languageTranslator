@@ -92,10 +92,6 @@ class TranslatorApp(QMainWindow):
         self.dest_language_combobox.addItems(TranslatorLogic.get_languages().values())
         self.dest_language_combobox.setCurrentText("spanish")
         
-        # Connects the source language combo box to the translate_text method
-        self.source_language_combobox.currentTextChanged.connect(self.check_same_language)
-        self.dest_language_combobox.currentTextChanged.connect(self.check_same_language)
-        
         # Create a button to swap the languages
         swap_language_button = QPushButton("🔄")
         swap_language_button.clicked.connect(self.switch_languages)
@@ -204,19 +200,6 @@ class TranslatorApp(QMainWindow):
         dest_index = self.dest_language_combobox.currentIndex()
         self.source_language_combobox.setCurrentIndex(dest_index) # Set the source language to the destination language
         self.dest_language_combobox.setCurrentIndex(source_index) # Set the destination language to the source language
-        
-    # Method to check if the language from the source and destination are the same
-    def check_same_language(self):
-        source_lang = self.source_language_combobox.currentText() # Get the source language
-        dest_lang = self.dest_language_combobox.currentText() # Get the destination language
-        if source_lang == dest_lang: # Check if the source and destination languages are the same
-            QMessageBox.critical(self, "Error", "Source and destination languages cannot be the same.") # Show an error message
-            source_lang = "english" # Set the source language to "english"
-            dest_lang = "spanish" # Set the destination language to "spanish"
-            self.source_language_combobox.setCurrentText(source_lang) # Set the source language combo box to "english"
-            self.dest_language_combobox.setCurrentText(dest_lang) #    Set the destination language combo box to "spanish"
-            return True
-        return False
     
     # Define the method to speak the text
     def speak_text(self):
