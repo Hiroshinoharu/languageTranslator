@@ -4,7 +4,16 @@ from PyQt6.QtGui import QIcon
 
 # Define a class named HistoryWindow that inherits from QWidget
 class HistoryWindow(QWidget):
-    
+    """
+    A window that displays a list of histories.
+
+    Args:
+        hsitory (dict): A dictionary containing the history items.
+
+    Attributes:
+        history (dict): A dictionary containing the history items.
+
+    """
     # Define the constructor method that takes a 'history' parameter
     def __init__(self, history):
         super().__init__() # Call the constructor of the base class (QWidget)
